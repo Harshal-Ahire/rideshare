@@ -1,7 +1,7 @@
 import React from 'react';
 import { Shield, X } from 'lucide-react';
 import DriverCard from './DriverCard';
-import RideSummary from './RideSummary';
+import RideSummary from '../common/RideSummary';
 
 export default function RideTracker({ 
   status, 
