@@ -6,10 +6,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-/**
- * Simple security config for development
- * In production, use JWT + proper authentication
- */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -17,9 +13,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())  // Disable for simplicity in demo
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/**", "/ws/**").permitAll()  // Allow all for demo
                 .anyRequest().permitAll()
             );
         return http.build();
