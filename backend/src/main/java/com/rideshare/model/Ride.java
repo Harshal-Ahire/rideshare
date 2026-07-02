@@ -2,7 +2,6 @@ package com.rideshare.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,26 +13,22 @@ public class Ride {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "rider_id")
-    private User rider;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id")
-    private Driver driver;
+    private User driver;   // Changed from Driver to User
 
     private String pickupLocation;
-    private String dropoffLocation;
+    private String dropLocation;
 
     private Double pickupLat;
     private Double pickupLng;
-    private Double dropoffLat;
-    private Double dropoffLng;
-
-    @Enumerated(EnumType.STRING)
-    private RideStatus status = RideStatus.REQUESTED;
+    private Double dropLat;
+    private Double dropLng;
 
     private Double fare;
-    private LocalDateTime requestedAt = LocalDateTime.now();
-    private LocalDateTime completedAt;
+
+    @Enumerated(EnumType.STRING)
+    private RideStatus status = RideStatus.PENDING;
+
+    private LocalDateTime createdAt;
 }
