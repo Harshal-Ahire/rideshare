@@ -1,57 +1,75 @@
 package com.rideshare.service;
 
 import com.rideshare.dto.RideRequest;
-import com.rideshare.model.Driver;
+import com.rideshare.dto.RideResponse;
 import com.rideshare.model.Ride;
-import com.rideshare.model.RideStatus;
+import com.rideshare.model.User;
 import com.rideshare.repository.RideRepository;
-import lombok.RequiredArgsConstructor;
+import com.rideshare.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class RideService {
 
-    private final RideRepository rideRepository;
-    private final MatchingService matchingService;
-    private final UserService userService;
+    @Autowired
+    private RideRepository rideRepository;
 
-    public Ride createRide(RideRequest request, String riderEmail) {
-        User rider = userService.findOrCreateUser(riderEmail, null);
+    @Autowired
+    private UserRepository userRepository;
+
+    public RideResponse createRide(RideRequest request, String driverId) {
+        User driver = userRepository.findById(driverId)
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
 
         Ride ride = new Ride();
-        ride.setRider(rider);
+        ride.setDriver(driver);
         ride.setPickupLocation(request.getPickupLocation());
-        ride.setDropoffLocation(request.getDropoffLocation());
+        ride.setDropLocation(request.getDropLocation());
         ride.setPickupLat(request.getPickupLat());
         ride.setPickupLng(request.getPickupLng());
-        ride.setDropoffLat(request.getDropoffLat());
-        ride.setDropoffLng(request.getDropoffLng());
-        ride.setStatus(RideStatus.REQUESTED);
-        ride.setRequestedAt(LocalDateTime.now());
+        ride.setDropLat(request.getDropLat());
+        ride.setDropLng(request.getDropLng());
+        ride.setFare(request.getFare());
+        ride.setStatus("PENDING");
+        ride.setCreatedAt(LocalDateTime.now());
 
-        double distance = calculateDistance(request.getPickupLat(), request.getPickupLng(), 
-                                           request.getDropoffLat(), request.getDropoffLng());
-        ride.setFare(estimateFare(distance));
+        Ride savedRide = rideRepository.save(ride);
 
-        Driver matchedDriver = matchingService.findNearestAvailableDriver(
-            request.getPickupLat(), request.getPickupLng());
+        return mapToResponse(savedRide);
+    }
 
-        if (matchedDriver != null) {
-            ride.setDriver(matchedDriver);
-            ride.setStatus(RideStatus.ACCEPTED);
+    public List<RideResponse> getAvailableRides() {
+        List<Ride> rides = rideRepository.findByStatus("PENDING");
+        return rides.stream().map(this::mapToResponse).collect(Collectors.toList());
+    }
+
+    public RideResponse acceptRide(String rideId, String driverId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+
+        if (!ride.getDriver().getId().equals(driverId)) {
+            throw new RuntimeException("Not authorized");
         }
 
-        return rideRepository.save(ride);
+        ride.setStatus("ACCEPTED");
+        Ride saved = rideRepository.save(ride);
+        return mapToResponse(saved);
     }
 
-    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        return Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lon2 - lon1, 2)) * 111;
-    }
-
-    private double estimateFare(double distanceKm) {
-        return 50 + (distanceKm * 12);
+    private RideResponse mapToResponse(Ride ride) {
+        RideResponse response = new RideResponse();
+        response.setId(ride.getId());
+        response.setDriverId(ride.getDriver().getId());
+        response.setPickupLocation(ride.getPickupLocation());
+        response.setDropLocation(ride.getDropLocation());
+        response.setFare(ride.getFare());
+        response.setStatus(ride.getStatus());
+        response.setCreatedAt(ride.getCreatedAt());
+        return response;
     }
 }
