@@ -2,15 +2,13 @@ package com.rideshare.controller;
 
 import com.rideshare.dto.RideRequest;
 import com.rideshare.dto.RideResponse;
-import com.rideshare.model.Ride;
 import com.rideshare.service.RideService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Main Ride booking endpoints
- */
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/rides")
 @RequiredArgsConstructor
@@ -22,13 +20,20 @@ public class RideController {
     @PostMapping("/book")
     public ResponseEntity<RideResponse> bookRide(@RequestBody RideRequest request,
                                                  @RequestParam String riderEmail) {
-        Ride ride = rideService.createRide(request, riderEmail);
-        return ResponseEntity.ok(RideResponse.success(ride));
+        RideResponse response = rideService.createRide(request, riderEmail);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{rideId}")
-    public ResponseEntity<Ride> getRide(@PathVariable Long rideId) {
-        // For simplicity, return mock or implement repository find
-        return ResponseEntity.ok(new Ride()); // Expand as needed
+    @GetMapping("/available")
+    public ResponseEntity<List<RideResponse>> getAvailableRides() {
+        List<RideResponse> rides = rideService.getAvailableRides();
+        return ResponseEntity.ok(rides);
+    }
+
+    @PostMapping("/{rideId}/accept")
+    public ResponseEntity<RideResponse> acceptRide(@PathVariable String rideId,
+                                                   @RequestParam String driverEmail) {
+        RideResponse response = rideService.acceptRide(rideId, driverEmail);
+        return ResponseEntity.ok(response);
     }
 }
