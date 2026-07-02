@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+import com.rideshare.model.Driver;
+import com.rideshare.model.RideStatus;
+
 @Entity
 @Table(name = "rides")
 @Data
