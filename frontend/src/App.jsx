@@ -7,8 +7,8 @@ import BookRide from './pages/BookRide';
 import RideTracking from './pages/RideTracking';
 import Profile from './pages/Profile';
 
-import Navbar from './components/Navbar';
-import BottomNav from './components/BottomNav';
+import Navbar from './components/layout/Navbar';
+import BottomNav from './components/layout/BottomNav';
 import Button from './components/Button';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
