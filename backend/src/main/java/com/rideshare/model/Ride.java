@@ -15,7 +15,7 @@ public class Ride {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id")
-    private User driver;   // Changed from Driver to User
+    private User driver;
 
     private String pickupLocation;
     private String dropLocation;
@@ -28,7 +28,7 @@ public class Ride {
     private Double fare;
 
     @Enumerated(EnumType.STRING)
-    private RideStatus status = RideStatus.PENDING;
+    private RideStatus status = RideStatus.REQUESTED;
 
     private LocalDateTime createdAt;
 }
