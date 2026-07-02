@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, useMap, Polyline } from 'react-leaflet';
 import L from 'leaflet';
-import RideTracker from '../components/common/RideTracker'; 
+import RideTracker from '../components/ride/RideTracker'; // 👈 Fixed folder path
 
 const createCustomIcon = (html, size = 32) => {
   return new L.DivIcon({
