@@ -9,7 +9,7 @@ import Profile from './pages/Profile';
 
 import Navbar from './components/layout/Navbar';
 import BottomNav from './components/layout/BottomNav';
-import Button from './components/Button';
+import Button from './components/common/Button';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 function ProtectedRoute({ children }) {
