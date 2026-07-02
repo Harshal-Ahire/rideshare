@@ -1,27 +1,24 @@
-# Use Eclipse Temurin (reliable OpenJDK distribution)
-FROM eclipse-temurin:17-jdk
+# ---------- Build stage ----------
+FROM maven:3.9-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
-# Copy Maven wrapper and pom
-COPY .mvn/ .mvn
-COPY mvnw .
+# Copy pom first for dependency caching
 COPY pom.xml .
+RUN mvn dependency:go-offline -B
 
-# Give execute permission
-RUN chmod +x ./mvnw
-
-# Download dependencies (caching)
-RUN ./mvnw dependency:go-offline -B
-
-# Copy source
+# Copy source and build
 COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Build
-RUN ./mvnw clean package -DskipTests
+# ---------- Runtime stage ----------
+FROM eclipse-temurin:17-jre
 
-# Expose port
+WORKDIR /app
+
+# Copy the built jar from the build stage
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
 
-# Run the app
-CMD ["java", "-jar", "target/rideshare-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "app.jar"]
