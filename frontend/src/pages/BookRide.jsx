@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, useMap, Polyline } from 'react-leaflet';
 import L from 'leaflet';
-import RideForm from '../components/common/RideForm'; 
+import RideForm from '../components/ride/RideForm'; // 👈 Fixed folder path
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const createCustomIcon = (color, text) => {
@@ -34,6 +34,13 @@ function MapController({ points }) {
   }, [points, map]);
   return null;
 }
+
+// Baseline mock data matching what RideForm requires
+const MOCK_TIERS = [
+  { id: 'economy', title: 'RideShare Economy', price: 150.00, eta: '2 mins', capacity: 4, icon: '🚗' },
+  { id: 'premium', title: 'RideShare Premium', price: 280.00, eta: '3 mins', capacity: 4, icon: '⭐' },
+  { id: 'auto', title: 'RideShare Auto', price: 60.00, eta: '5 mins', capacity: 3, icon: '🛺' }
+];
 
 export default function BookRide() {
   const location = useLocation();
@@ -80,15 +87,16 @@ export default function BookRide() {
     }
   }, [dropoff]);
 
-  const handleConfirmRide = (formData) => {
+  const handleConfirmRide = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
     setIsSearching(true);
     setTimeout(() => {
       setIsSearching(false);
       navigate('/track', { 
         state: { 
-          pickup: formData.pickup || pickup, 
-          dropoff: formData.dropoff || dropoff,
-          tier: formData.selectedTier || selectedTier,
+          pickup: pickup, 
+          dropoff: dropoff,
+          tier: selectedTier,
           userCoords: pickupCoords 
         } 
       });
@@ -113,6 +121,7 @@ export default function BookRide() {
           setPickup={setPickup}
           dropoff={dropoff}
           setDropoff={setDropoff}
+          rideTiers={MOCK_TIERS} // 👈 Added needed array mapping variables
           selectedTier={selectedTier}
           setSelectedTier={setSelectedTier}
           onSubmit={handleConfirmRide}
