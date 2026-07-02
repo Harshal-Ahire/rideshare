@@ -1,5 +1,5 @@
-# Use a more reliable OpenJDK image
-FROM openjdk:17-jdk
+# Use Eclipse Temurin (reliable OpenJDK distribution)
+FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
@@ -8,18 +8,20 @@ COPY .mvn/ .mvn
 COPY mvnw .
 COPY pom.xml .
 
-# Give permission to mvnw
+# Give execute permission
 RUN chmod +x ./mvnw
 
-# Download dependencies first (better caching)
+# Download dependencies (caching)
 RUN ./mvnw dependency:go-offline -B
 
-# Copy source code
+# Copy source
 COPY src ./src
 
-# Build the application
+# Build
 RUN ./mvnw clean package -DskipTests
 
-# Run the app
+# Expose port
 EXPOSE 8080
+
+# Run the app
 CMD ["java", "-jar", "target/rideshare-0.0.1-SNAPSHOT.jar"]
