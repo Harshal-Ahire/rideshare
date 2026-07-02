@@ -3,6 +3,7 @@ package com.rideshare.service;
 import com.rideshare.dto.RideRequest;
 import com.rideshare.dto.RideResponse;
 import com.rideshare.model.Ride;
+import com.rideshare.model.RideStatus;
 import com.rideshare.model.User;
 import com.rideshare.repository.RideRepository;
 import com.rideshare.repository.UserRepository;
@@ -35,7 +36,7 @@ public class RideService {
         ride.setDropLat(request.getDropLat());
         ride.setDropLng(request.getDropLng());
         ride.setFare(request.getFare());
-        ride.setStatus("PENDING");
+        ride.setStatus(RideStatus.REQUESTED);
         ride.setCreatedAt(LocalDateTime.now());
 
         Ride savedRide = rideRepository.save(ride);
@@ -43,7 +44,7 @@ public class RideService {
     }
 
     public List<RideResponse> getAvailableRides() {
-        List<Ride> rides = rideRepository.findByStatus("PENDING");
+        List<Ride> rides = rideRepository.findByStatus(RideStatus.REQUESTED);
         return rides.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
@@ -55,7 +56,7 @@ public class RideService {
             throw new RuntimeException("Not authorized");
         }
 
-        ride.setStatus("ACCEPTED");
+        ride.setStatus(RideStatus.ACCEPTED);
         Ride saved = rideRepository.save(ride);
         return mapToResponse(saved);
     }
