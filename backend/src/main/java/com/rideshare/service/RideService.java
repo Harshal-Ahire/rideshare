@@ -23,7 +23,7 @@ public class RideService {
     private UserRepository userRepository;
 
     public RideResponse createRide(RideRequest request, String driverId) {
-        User driver = userRepository.findById(driverId)
+        User driver = userRepository.findById(Long.parseLong(driverId))
                 .orElseThrow(() -> new RuntimeException("Driver not found"));
 
         Ride ride = new Ride();
@@ -39,7 +39,6 @@ public class RideService {
         ride.setCreatedAt(LocalDateTime.now());
 
         Ride savedRide = rideRepository.save(ride);
-
         return mapToResponse(savedRide);
     }
 
@@ -49,10 +48,10 @@ public class RideService {
     }
 
     public RideResponse acceptRide(String rideId, String driverId) {
-        Ride ride = rideRepository.findById(rideId)
+        Ride ride = rideRepository.findById(Long.parseLong(rideId))
                 .orElseThrow(() -> new RuntimeException("Ride not found"));
 
-        if (!ride.getDriver().getId().equals(driverId)) {
+        if (!ride.getDriver().getId().equals(Long.parseLong(driverId))) {
             throw new RuntimeException("Not authorized");
         }
 
@@ -68,7 +67,7 @@ public class RideService {
         response.setPickupLocation(ride.getPickupLocation());
         response.setDropLocation(ride.getDropLocation());
         response.setFare(ride.getFare());
-        response.setStatus(ride.getStatus());
+        response.setStatus(ride.getStatus().name());
         response.setCreatedAt(ride.getCreatedAt());
         return response;
     }
