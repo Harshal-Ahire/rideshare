@@ -1,21 +1,15 @@
 package com.rideshare.dto;
 
-import com.rideshare.model.Ride;
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 public class RideResponse {
-    private Long rideId;
+    private Long id;
+    private Long driverId;
+    private String pickupLocation;
+    private String dropLocation;
+    private Double fare;
     private String status;
-    private String message;
-    private Double estimatedFare;
-    private Ride ride; // Full ride details
-
-    public static RideResponse success(Ride ride) {
-        RideResponse response = new RideResponse();
-        response.setRideId(ride.getId());
-        response.setStatus("SUCCESS");
-        response.setRide(ride);
-        return response;
-    }
+    private LocalDateTime createdAt;
 }
