@@ -46,13 +46,13 @@ The system is organized into modular Spring Boot services, uses **WebSockets** f
 
 | Capability | Description |
 |---|---|
-| 🔐 **Authentication & Authorization** | Secure RESTful APIs with JWT authentication and role-based access control (rider / driver / admin) |
-| 🚕 **Ride Lifecycle Management** | End-to-end handling of ride requests, acceptance, in-progress tracking, and completion |
-| 🧭 **Driver Matching** | Matching logic to pair riders with nearby available drivers |
-| 💰 **Fare Calculation** | Computes trip fares based on ride parameters |
-| 📍 **Live Location Updates** | Real-time driver location broadcasting via WebSocket |
-| 📡 **Status Synchronization** | Real-time ride acceptance and trip status updates pushed to clients instantly |
-| 🗄️ **Low-Latency Matching** | Indexed PostgreSQL schema designed for fast geographic and status-based queries |
+| **Authentication & Authorization** | Secure RESTful APIs with JWT authentication and role-based access control (rider / driver / admin) |
+| **Ride Lifecycle Management** | End-to-end handling of ride requests, acceptance, in-progress tracking, and completion |
+| **Driver Matching** | Matching logic to pair riders with nearby available drivers |
+| **Fare Calculation** | Computes trip fares based on ride parameters |
+| **Live Location Updates** | Real-time driver location broadcasting via WebSocket |
+| **Status Synchronization** | Real-time ride acceptance and trip status updates pushed to clients instantly |
+| **Low-Latency Matching** | Indexed PostgreSQL schema designed for fast geographic and status-based queries |
 
 ---
 
